@@ -5,22 +5,34 @@ import {
   DeleteDateColumn,
   Entity,
   PrimaryGeneratedColumn,
+  Unique,
   UpdateDateColumn,
 } from 'typeorm';
+import { Sex } from './user.dto';
 
 @Entity()
+@Unique(['email'])
 export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
+  @Column()
   email: string;
+
+  @Column()
+  name: string;
 
   @Column()
   password: string;
 
   @Column()
-  mobile: number;
+  mobile: string;
+
+  @Column()
+  age: number;
+
+  @Column()
+  sex: Sex;
 
   @CreateDateColumn()
   createdAt: Date;
