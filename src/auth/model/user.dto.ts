@@ -51,3 +51,7 @@ export class SignUpDTO extends SignInDTO {
   })
   sex: Sex;
 }
+
+export interface JwtPayload {
+  id: number;
+}

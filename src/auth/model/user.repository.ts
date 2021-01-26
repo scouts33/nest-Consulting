@@ -1,6 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { User } from './user.entity';
-import { SignUpDTO } from './user.dto';
+import { SignInDTO, SignUpDTO } from './user.dto';
 import {
   ConflictException,
   InternalServerErrorException,
@@ -20,6 +20,7 @@ export class UserRepository extends Repository<User> {
     user.age = age;
     user.mobile = mobile;
     user.sex = sex;
+    user.salt = salt;
     try {
       await user.save();
     } catch (error) {
@@ -33,5 +34,15 @@ export class UserRepository extends Repository<User> {
 
   private async hashPassword(password: string, salt: string): Promise<string> {
     return bcrypt.hash(password, salt);
+  }
+
+  async signIn(signinDTO: SignInDTO): Promise<User> {
+    const { email, password } = signinDTO;
+    const user = await this.findOne({ email });
+    if (user && (await user.validatePassword(password))) {
+      return user;
+    }
+
+    return null;
   }
 }

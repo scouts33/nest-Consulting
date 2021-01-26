@@ -9,6 +9,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Sex } from './user.dto';
+import * as bcrypt from 'bcrypt';
 
 @Entity()
 @Unique(['email'])
@@ -34,6 +35,9 @@ export class User extends BaseEntity {
   @Column()
   sex: Sex;
 
+  @Column()
+  salt: string;
+
   @CreateDateColumn()
   createdAt: Date;
 
@@ -42,4 +46,9 @@ export class User extends BaseEntity {
 
   @DeleteDateColumn()
   deletedAt: Date;
+
+  async validatePassword(password: string): Promise<boolean> {
+    const hash = await bcrypt.hash(password, this.salt);
+    return hash === this.password;
+  }
 }
